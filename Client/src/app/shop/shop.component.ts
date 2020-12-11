@@ -11,17 +11,18 @@ import { ShopParams } from '../shared/models/shopParams';
   styleUrls: ['./shop.component.scss'],
 })
 export class ShopComponent implements OnInit {
-  @ViewChild('search',{static:true}) searchTerm: ElementRef;
+  @ViewChild('search', { static: true }) searchTerm: ElementRef;
   products: IProduct[];
   brands: IBrand[];
   types: IType[];
   shopParams = new ShopParams();
-  totalCount:number;
-  sortOptions = [{name:"Alphabetical", value:"name"},
-                 {name:"Price: Low to High", value:"priceAsc"},
-                 {name:"Price: High to Low", value:"priceDesc"}
-];
-  constructor(private shopservice: ShopService) {}
+  totalCount: number;
+  sortOptions = [
+    { name: 'Alphabetical', value: 'name' },
+    { name: 'Price: Low to High', value: 'priceAsc' },
+    { name: 'Price: High to Low', value: 'priceDesc' },
+  ];
+  constructor(private shopservice: ShopService) { }
 
   ngOnInit(): void {
     this.GetProducts();
@@ -29,19 +30,17 @@ export class ShopComponent implements OnInit {
     this.GetTypes();
   }
   GetProducts() {
-    this.shopservice
-      .GetProducts(this.shopParams)
-      .subscribe(
-        (response) => {
-          this.products = response.data;
-          this.shopParams.pageNumber= response.pageIndex;
-          this.shopParams.pageSize = response.pageSize;
-          this.totalCount = response.count;
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+    this.shopservice.GetProducts(this.shopParams).subscribe(
+      (response) => {
+        this.products = response.data;
+        this.shopParams.pageNumber = response.pageIndex;
+        this.shopParams.pageSize = response.pageSize;
+        this.totalCount = response.count;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
   GetBrands() {
     this.shopservice.GetBrands().subscribe(
@@ -73,23 +72,23 @@ export class ShopComponent implements OnInit {
     this.shopParams.typeId = typeId;
     this.GetProducts();
   }
-  OnSortSelected(sort:string){
+  OnSortSelected(sort: string) {
     this.shopParams.sort = sort;
     this.GetProducts();
   }
-  OnPageChanged(event:any){
-    if(this.shopParams.pageNumber !== event.page){
+  OnPageChanged(event: any) {
+    if (this.shopParams.pageNumber !== event.page) {
       this.shopParams.pageNumber = event.page;
       this.GetProducts();
     }
   }
-  OnSearch(){
+  OnSearch() {
     this.shopParams.pageNumber = 1;
     this.shopParams.search = this.searchTerm.nativeElement.value;
     this.GetProducts();
   }
-  OnReset(){
-    this.searchTerm.nativeElement.value = "";
+  OnReset() {
+    this.searchTerm.nativeElement.value = '';
     this.shopParams = new ShopParams();
     this.GetProducts();
   }
